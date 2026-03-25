@@ -31,6 +31,7 @@ This installs:
 - **Slash commands** (`~/.claude/commands/`) - Quick access to common operations:
   - `/kreview` - Review a single commit for regressions
   - `/kseries` - Review an entire patch series (git range) commit-by-commit
+  - `/kabi` - Check a commit or range for user/kernel ABI compatibility issues
   - `/kdebug` - Debug kernel crashes and warnings
   - `/kverify` - Verify findings against false positive patterns
 
