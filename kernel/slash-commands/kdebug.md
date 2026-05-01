@@ -1,3 +1,9 @@
+---
+name: kdebug
+description: Analyze a Linux kernel crash, warning, or debugging issue
+argument-hint: [issue details]
+---
+
 Read the prompt {{REVIEW_DIR}}/debugging.md
 
 Use the prompt to help analyze and debug the current issue.  Ask if you don't

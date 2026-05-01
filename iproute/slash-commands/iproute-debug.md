@@ -1,3 +1,9 @@
+---
+name: iproute-debug
+description: Debug iproute2 issues with review prompt context
+argument-hint: [issue details]
+---
+
 # /iproute-debug - iproute2 Debug
 
 Debug iproute2 issues using the context files in the review prompt directory.

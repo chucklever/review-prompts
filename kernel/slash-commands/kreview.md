@@ -1,3 +1,9 @@
+---
+name: kreview
+description: Run Linux kernel deep dive regression review
+argument-hint: [commit|range|patch]
+---
+
 Read the prompt {{REVIEW_DIR}}/review-core.md
 
 If a git range is provided, it's meant for the false-positive-guide.md section

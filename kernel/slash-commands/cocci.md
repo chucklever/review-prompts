@@ -1,3 +1,9 @@
+---
+name: cocci
+description: Generate a Coccinelle semantic patch for a kernel transformation
+argument-hint: <transformation>
+---
+
 Read the prompt `{{REVIEW_DIR}}/coccinelle.md`
 
 Generate a Coccinelle semantic patch (.cocci file) for the requested code transformation.

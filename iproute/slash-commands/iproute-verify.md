@@ -1,3 +1,9 @@
+---
+name: iproute-verify
+description: Verify iproute2 patches and review findings
+argument-hint: [commit|finding details]
+---
+
 # /iproute-verify - iproute2 Patch Verification
 
 Verify that an iproute2 patch is correct and complete.

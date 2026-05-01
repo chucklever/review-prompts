@@ -1,3 +1,9 @@
+---
+name: kseries
+description: Review a Linux kernel patch series for regressions
+argument-hint: <base>..<head> [--cover-letter <message-id|url>]
+---
+
 Read the prompt {{REVIEW_DIR}}/review-core.md
 
 This performs deep dive regression analysis of an entire patch series (git range).

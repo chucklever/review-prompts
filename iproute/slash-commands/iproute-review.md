@@ -1,3 +1,9 @@
+---
+name: iproute-review
+description: Review iproute2 patches for regressions
+argument-hint: [commit|range|patch]
+---
+
 # /iproute-review - iproute2 Patch Review
 
 Using the prompt `review-core.md` and the review prompt directory, do a deep

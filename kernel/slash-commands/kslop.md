@@ -1,3 +1,9 @@
+---
+name: kslop
+description: Run the subjective AI-slop stylistic review pass on a Linux kernel patch
+argument-hint: [commit|range|patch]
+---
+
 Read the prompts {{REVIEW_DIR}}/slop-indicators.md and {{REVIEW_DIR}}/subsystem/subjective-review.md
 
 This is a standalone run of the subjective slop pass (normally part of agent/review.md's
