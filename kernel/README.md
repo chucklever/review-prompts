@@ -32,6 +32,7 @@ This installs:
   - `/kreview` - Review a single commit for regressions
   - `/kseries` - Review an entire patch series (git range) commit-by-commit
   - `/kabi` - Check a commit or range for user/kernel ABI compatibility issues
+  - `/kdoc` - Review commit messages, code comments, and Documentation/ files
   - `/kdebug` - Debug kernel crashes and warnings
   - `/kverify` - Verify findings against false positive patterns
 
