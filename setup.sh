@@ -2,8 +2,8 @@
 #
 # Setup script for AI-assisted code review prompts
 #
-# Installs skills and slash commands for the specified agent on their respective
-# locations.
+# Installs skills and command prompts for the specified agent on their
+# respective locations.
 #
 # Usage: ./setup.sh [OPTIONS] <agent> <project>
 #
@@ -15,8 +15,10 @@
 # placeholder {{<PROJECT>_REVIEW_PROMPTS_DIR}} (uppercased project name)
 # for paths that should resolve to the project directory at install time.
 #
-# Slash commands live in <project>/slash-commands/*.md and may use
-# {{REVIEW_DIR}} as a placeholder for the project directory path.
+# Command prompts live in <project>/slash-commands/*.md and may use
+# {{REVIEW_DIR}} or {{<PROJECT>_REVIEW_PROMPTS_DIR}} as placeholders for the
+# project directory path.  Agents can install them as slash commands, skills,
+# or both.
 
 set -e
 
@@ -25,7 +27,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 usage() {
     echo "Usage: $0 [OPTIONS] <agent> <project>"
     echo "Setup script for AI-assisted code review prompts."
-    echo "Installs skills and slash commands for the specified agent."
+    echo "Installs skills and command prompts for the specified agent."
     echo ""
     echo "Arguments:"
     echo "  <agent>     Install skill and commands for this code agent"
@@ -45,6 +47,7 @@ install_project() {
     local src_skill_fn="${project}.md"
     local project_dir="$SCRIPT_DIR/$project"
     local prompts_dir_var="${project^^}_REVIEW_PROMPTS_DIR"
+    local command_prefix="${COMMAND_PREFIX:-/}"
 
     echo "--- Installing $project prompts ---"
 
@@ -59,48 +62,68 @@ install_project() {
     fi
 
     mkdir -p "$agent_skills_dir"
-    sed "s|{{${prompts_dir_var}}}|$project_dir|g" "$src_skill_path" > "$agent_skill_path"
+    sed \
+        -e "s|{{${prompts_dir_var}}}|$project_dir|g" \
+        -e "s|{{REVIEW_DIR}}|$project_dir|g" \
+        "$src_skill_path" > "$agent_skill_path"
 
     echo "Installed skill:"
     echo "  $agent_skill_path"
 
-    # Install slash commands to agent specific path
+    # Install command prompts to the agent specific path
     local src_commands="$project_dir/slash-commands"
 
     if [ ! -d "$src_commands" ]; then
         echo "Warning: commands directory not found for $project, skipping"
     else
-        mkdir -p "$COMMANDS_DIR"
+        if [ "${COMMANDS_AS_SKILLS:-0}" = "1" ]; then
+            # The agent has no standalone slash-command files; install
+            # each command as a skill (<name>/SKILL.md) so the agent
+            # exposes it as <prefix><name>.  Skills require frontmatter
+            # with a name, so generate it when the source file has none.
+            echo ""
+            echo "Installed command skills:"
 
-        echo ""
-        echo "Installed slash commands:"
-
-        for cmd_file in "$src_commands"/*.md; do
-            if [ -f "$cmd_file" ]; then
-                local cmd_name=$(basename "$cmd_file")
-                if [ "${COMMANDS_AS_SKILLS:-0}" = "1" ]; then
-                    # The agent has no standalone slash-command files; install
-                    # each command as a skill (<name>/SKILL.md) so the agent
-                    # exposes it as /<name>.  Skills require frontmatter with
-                    # a name, so generate it when the source file has none.
-                    local cmd_skill_dir="$COMMANDS_DIR/${cmd_name%.md}"
+            for cmd_file in "$src_commands"/*.md; do
+                if [ -f "$cmd_file" ]; then
+                    local cmd_name=$(basename "$cmd_file")
+                    local cmd_skill_name="${cmd_name%.md}"
+                    local cmd_skill_dir="$SKILL_BASE_DIR/$cmd_skill_name"
+                    local cmd_skill_path="$cmd_skill_dir/$SKILL_FILE_NAME"
                     mkdir -p "$cmd_skill_dir"
                     {
                         if ! head -n 1 "$cmd_file" | grep -q '^---$'; then
                             printf -- '---\n'
-                            printf 'name: %s\n' "${cmd_name%.md}"
-                            printf 'description: "/%s slash command from the %s review prompts; load only when invoked explicitly"\n' \
-                                "${cmd_name%.md}" "$project"
+                            printf 'name: %s\n' "$cmd_skill_name"
+                            printf 'description: "%s%s slash command from the %s review prompts; load only when invoked explicitly"\n' \
+                                "$command_prefix" "$cmd_skill_name" "$project"
                             printf -- '---\n\n'
                         fi
-                        sed "s|{{REVIEW_DIR}}|$project_dir|g" "$cmd_file"
-                    } > "$cmd_skill_dir/$SKILL_FILE_NAME"
-                else
-                    sed "s|{{REVIEW_DIR}}|$project_dir|g" "$cmd_file" > "$COMMANDS_DIR/$cmd_name"
+                        sed \
+                            -e "s|{{${prompts_dir_var}}}|$project_dir|g" \
+                            -e "s|{{REVIEW_DIR}}|$project_dir|g" \
+                            "$cmd_file"
+                    } > "$cmd_skill_path"
+                    echo "  ${command_prefix}${cmd_skill_name}"
                 fi
-                echo "  ${COMMAND_PREFIX:-/}${cmd_name%.md}"
-            fi
-        done
+            done
+        elif [ -n "${COMMANDS_DIR:-}" ]; then
+            mkdir -p "$COMMANDS_DIR"
+
+            echo ""
+            echo "Installed slash commands:"
+
+            for cmd_file in "$src_commands"/*.md; do
+                if [ -f "$cmd_file" ]; then
+                    local cmd_name=$(basename "$cmd_file")
+                    sed \
+                        -e "s|{{${prompts_dir_var}}}|$project_dir|g" \
+                        -e "s|{{REVIEW_DIR}}|$project_dir|g" \
+                        "$cmd_file" > "$COMMANDS_DIR/$cmd_name"
+                    echo "  ${command_prefix}${cmd_name%.md}"
+                fi
+            done
+        fi
     fi
 
     echo ""

@@ -23,6 +23,12 @@ executed with `-h|--help` option.
 | systemd | `/systemd-review` | `/systemd-debug` | `/systemd-verify` |
 | iproute | `/iproute-review` | `/iproute-debug` | `/iproute-verify` |
 
+Agents without standalone slash-command files, such as Codex and goose,
+get these workflows installed as command skills alongside the project
+skill instead. Codex invokes them with the `$` prefix, for example
+`$kreview`; goose keeps the `/` prefix. Open a new Codex session after
+installing or updating skills.
+
 ## Project Documentation
 
 * [Kernel Review Prompts](kernel/README.md) - Linux kernel specific patterns and protocols
