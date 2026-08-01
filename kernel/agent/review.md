@@ -324,9 +324,10 @@ Apply `slop-indicators.md` (loaded in PHASE 1) with the discipline in
 - **Never imply authorship.** Do not say or hint the code is AI/tool/machine generated, and do
   not mention the author. Talk only about the code.
 - **Cap at 3** slop findings for this FILE-N; prefer the most objective (copy-paste, dead code,
-  weak changelog) over the softer ones (verbose, naming, churn, comments).
+  weak changelog, run-on prose) over the softer ones (verbose, naming, churn, comments).
 - If this is FILE-1, also assess the commit message for SLOP-MSG (what-not-why, verbose padding,
-  non-kernel changelog format). Other FILE-N agents do not touch the commit message.
+  non-kernel changelog format) and SLOP-PROSE (run-on sentences, coined terminology). Other
+  FILE-N agents do not touch the commit message.
 
 Collect each kept finding as an issue for PHASE 5 with: `issue_type: "subjective"`,
 `issue_category: "slop"`, `slop_indicator: "<SLOP-...>"`, `issue_severity: "low"`, the verbatim

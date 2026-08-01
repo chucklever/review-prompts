@@ -132,6 +132,28 @@ the specific code, varying the wording (see `inline-template.md`).
   needed rather than restating the diff?" (use `inline-template.md`'s Commit Message Issues
   format).
 
+### SLOP-PROSE: changelog or comment prose that has to be parsed twice
+- Signal: a sentence carrying two or more causal links, often with an aside wedged between
+  them; a noun phrase coined to sound precise where the subsystem already has a word for the
+  thing ("the return boundary that a system call would otherwise provide", for the syscall
+  return); a paragraph deriving machinery the subsystem's own maintainers wrote. Changelog and
+  comment prose alike. SLOP-MSG covers what a changelog leaves out and SLOP-COMMENT whether a
+  comment should exist at all; this one is how the sentence reads. Do not file one span of text
+  under two indicators.
+- Confirm: count, do not judge. Two or more "so"/"because"/"which" links in a sentence past
+  ~40 words is the concrete instance. For a suspected coined phrase, grep the subsystem: if
+  neither the code nor the file's existing comments use it, and a plain kernel term covers the
+  same thing, it is coined. One long sentence in otherwise plain prose does not clear the
+  cluster requirement.
+- Not slop: prose that matches the register of the subsystem's own documentation; a long
+  sentence that enumerates rather than argues; unfamiliar terminology the subsystem actually
+  uses — check the tree before calling a term invented.
+- Norm: submitting-patches — the changelog is read by people who already know the subsystem;
+  coding-style — say the non-obvious thing and stop.
+- Question: quote the sentence and offer the shorter reading, e.g. "Would splitting this help —
+  is the point that <plain restatement>?" Never say the prose reads as generated: that is the
+  authorship verdict this guide forbids, and it ends the technical conversation.
+
 ## Output marking
 
 Every slop finding is a subjective observation. Emit it with:
